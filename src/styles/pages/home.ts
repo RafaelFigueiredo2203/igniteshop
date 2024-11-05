@@ -1,16 +1,17 @@
-import { styled } from "..";
+import { styled } from '..'
 
 export const HomeContainer = styled('main', {
-  display:'flex',
-  marginLeft:'auto',
-  width:'100%',
-  maxWidth:'calc(100vw - ((100vw - 1180px)/ 2))',
+  display: 'flex',
+  marginLeft: 'auto',
+  paddingBottom: 30,
+  width: '100%',
+  maxWidth: 'calc(100vw - ((100vw - 1180px)/ 2))',
 
-  minHeight:565,
-});
+  minHeight: 565,
+})
 
-export const Product = styled('div',{
-  marginLeft:10,
+export const Product = styled('div', {
+  marginLeft: 10,
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
   borderRadius: 8,
   cursor: 'pointer',
@@ -22,15 +23,16 @@ export const Product = styled('div',{
   justifyContent: 'center',
 
   img: {
-    objectFit: 'cover'
+    objectFit: 'cover',
   },
 
   footer: {
+    cursor: 'auto',
     position: 'absolute',
     bottom: '0.25rem',
     left: '0.25rem',
     right: '0.25rem',
-    padding: '2rem',
+    padding: '1rem',
 
     borderRadius: 6,
 
@@ -44,25 +46,45 @@ export const Product = styled('div',{
     opacity: 0,
     transition: 'all 0.2s ease-in-out',
 
+    div: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'left',
+      justifyContent: 'start',
+    },
+
     strong: {
       fontSize: '$lg',
       color: '$gray100',
     },
 
     span: {
-      fontSize: '$xl',
+      fontSize: '1.5rem',
       fontWeight: 'bold',
-      color: '$green300'
+      color: '$green300',
+      marginTop: 5,
+    },
+
+    button: {
+      width: 46,
+      height: 46,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 5,
+      border: 0,
+      backgroundColor: '#00875F',
+      cursor: 'pointer',
+      '&:hover': {
+        opacity: 0.5,
+      },
     },
   },
 
   '&:hover': {
     footer: {
       transform: 'translateY(0%)',
-      opacity: 1
-    }
-  }
-
-
-
-});
+      opacity: 1,
+    },
+  },
+})
