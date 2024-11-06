@@ -44,7 +44,7 @@ export default function Home({ products }: HomeProps) {
                   <span>{product.price}</span>
                 </div>
 
-                <button>
+                <button className="bg-black">
                   <Handbag size={24} color="white" weight="bold" />
                 </button>
               </footer>
