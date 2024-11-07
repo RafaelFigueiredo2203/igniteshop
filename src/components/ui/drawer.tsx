@@ -101,7 +101,7 @@ const DrawerFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'w-full flex flex-col gap-2  py-4 fixed bottom-0 left-0 px-14 border',
+      'w-full flex flex-col gap-2  py-4 fixed bottom-0 left-0 px-14 ',
       className,
     )}
     {...props}

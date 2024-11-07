@@ -1,4 +1,4 @@
-import { DrawerDemo } from '@/components/Modal'
+import { ModalDrawer } from '@/components/modal'
 import { Container, Header } from '@/styles/pages/app'
 import { AppProps } from 'next/app'
 import Image from 'next/image'
@@ -13,7 +13,7 @@ function App({ Component, pageProps }: AppProps) {
     <Container>
       <Header>
         <Image src={logoImg} alt="" />
-        <DrawerDemo />
+        <ModalDrawer />
       </Header>
 
       <Component {...pageProps} />
