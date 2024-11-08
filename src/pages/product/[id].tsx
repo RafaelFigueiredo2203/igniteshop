@@ -3,11 +3,12 @@ import {
   ProductContainer,
   ProductDetails,
 } from '@/styles/global'
-import axios from 'axios'
+import { useMyContext } from '@/utils/context/useContext'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import Stripe from 'stripe'
 import { stripe } from '../../lib/stripe'
 
@@ -26,7 +27,10 @@ export default function Product({ product }: ProductProps) {
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
     useState(false)
 
-  async function handleBuyButton() {
+  const { productsBuy, setProductsBuy } = useMyContext()
+  const notify = () => toast.success('Adicionado!', { autoClose: 2000 })
+
+  /*  async function handleBuyButton() {
     try {
       setIsCreatingCheckoutSession(true)
 
@@ -42,6 +46,15 @@ export default function Product({ product }: ProductProps) {
 
       alert('Falha ao redirecionar ao checkout!')
     }
+  }
+*/
+
+  function addToBag() {
+    setProductsBuy((prevState) => [...prevState, product])
+
+    // Atualizar o local storage com o novo estado do carrinho
+    localStorage.setItem('cart', JSON.stringify(productsBuy))
+    notify()
   }
 
   return (
@@ -61,10 +74,7 @@ export default function Product({ product }: ProductProps) {
 
           <p>{product.description}</p>
 
-          <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleBuyButton}
-          >
+          <button disabled={isCreatingCheckoutSession} onClick={addToBag}>
             Colocar na sacola
           </button>
         </ProductDetails>

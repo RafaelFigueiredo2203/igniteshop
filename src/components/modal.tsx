@@ -8,10 +8,34 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
+import { useMyContext } from '@/utils/context/useContext'
 import { X } from 'phosphor-react'
+import { toast } from 'react-toastify'
 import { ProductCard } from './ProductCard'
 
 export function ModalDrawer() {
+  const { productsBuy, setProductsBuy } = useMyContext()
+  const notify = () => toast.success('Removido!', { autoClose: 2000 })
+  const total = productsBuy.reduce(
+    (total, product) => total + Number(product.price),
+    0,
+  )
+
+  function handleProductRemove(id: string) {
+    const productIndex = productsBuy.findIndex((product) => product.id === id)
+
+    if (productIndex !== -1) {
+      // Verifica se o produto foi encontrado
+      const filterProducts = [...productsBuy] // Cria uma cópia do array de produtos
+      filterProducts.splice(productIndex, 1) // Remove o produto do array
+
+      setProductsBuy(filterProducts) // Atualiza o estado com o novo array de produtos
+
+      localStorage.setItem('cart', JSON.stringify(filterProducts))
+      notify() // Atualiza o armazenamento local
+    }
+  }
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -29,17 +53,25 @@ export function ModalDrawer() {
             </div>
             <DrawerTitle>Sacola de compras</DrawerTitle>
           </DrawerHeader>
-          <div className=" min-h-80 max-h-80 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300 overflow-y-scroll">
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-          </div>
+
+          {productsBuy.length === 0 ? (
+            <>
+              <span>Adicione produtos ao carrinho</span>
+            </>
+          ) : (
+            <div className=" min-h-80 max-h-80  overflow-y-scroll">
+              {productsBuy.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  image={product.imageUrl}
+                  name={product.name}
+                  price={product.price.toString()}
+                  onRemove={() => handleProductRemove(product.id)}
+                />
+              ))}
+            </div>
+          )}
+
           <DrawerFooter>
             <div className="flex flex-col items-center justify-between">
               <div className="w-full flex flex-row items-center justify-between">
@@ -47,14 +79,16 @@ export function ModalDrawer() {
                   Quantidade
                 </span>
                 <span className="text-base font-normal text-gray-200">
-                  3 itens
+                  {productsBuy.length} itens
                 </span>
               </div>
               <div className="w-full flex flex-row items-center justify-between">
                 <span className="text-lg font-bold text-gray-200">
                   Valor total
                 </span>
-                <span className="text-2xl font-bold text-gray-200">R$ 270</span>
+                <span className="text-2xl font-bold text-gray-200">
+                  R$ {total}
+                </span>
               </div>
             </div>
             <Button className="h-16 bg-[#00875F] flex items-center justify-center bottom-0 hover:opacity-40">
