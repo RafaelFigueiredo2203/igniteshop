@@ -9,7 +9,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { useMyContext } from '@/utils/context/useContext'
-import { X } from 'phosphor-react'
+import { Handbag, X } from 'phosphor-react'
 import { toast } from 'react-toastify'
 import { ProductCard } from './ProductCard'
 
@@ -39,7 +39,13 @@ export function ModalDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="outline">Open Drawer</Button>
+        <Button
+          className="disabled:cursor-not-allowed"
+          variant="outline"
+          disabled={productsBuy.length <= 0}
+        >
+          <Handbag size={24} color="white" weight="bold" />
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
