@@ -1,6 +1,7 @@
 import { stripe } from '@/lib/stripe'
 import { HomeContainer, Product } from '@/styles/pages/home'
 import { useMyContext } from '@/utils/context/useContext'
+import { FormatCurrency } from '@/utils/functions/formatCurrency'
 import 'keen-slider/keen-slider.min.css'
 import { useKeenSlider } from 'keen-slider/react'
 import { GetStaticProps } from 'next'
@@ -15,6 +16,7 @@ import Stripe from 'stripe'
 interface HomeProps {
   products: {
     id: string
+    stripe_id: string
     name: string
     imageUrl: string
     price: number
@@ -30,7 +32,7 @@ export default function Home({ products }: HomeProps) {
       spacing: 48,
     },
   })
-  console.log(products)
+
   const notify = () => toast.success('Adicionado!', { autoClose: 2000 })
 
   function addToBag(id: string) {
@@ -40,7 +42,13 @@ export default function Home({ products }: HomeProps) {
       return
     }
 
-    setProductsBuy((prevState) => [...prevState, newProductBuy])
+    const newProduct = {
+      // eslint-disable-next-line new-cap
+      id_local: Math.random(),
+      ...newProductBuy,
+    }
+
+    setProductsBuy((prevState) => [...prevState, newProduct])
 
     // Atualizar o local storage com o novo estado do carrinho
     localStorage.setItem('cart', JSON.stringify(productsBuy))
@@ -66,13 +74,13 @@ export default function Home({ products }: HomeProps) {
         {products.map((product) => {
           return (
             <Product key={product.id} className="keen-slider__slide">
-              <Link href={`/product/${product.id}`} prefetch={false}>
+              <Link href={`/product/${product.stripe_id}`} prefetch={false}>
                 <Image src={product.imageUrl} width={520} height={480} alt="" />
               </Link>
               <footer>
                 <div>
                   <strong>{product.name}</strong>
-                  <span>{product.price}</span>
+                  <span>{FormatCurrency(product.price)}</span>
                 </div>
 
                 <button
@@ -102,10 +110,7 @@ export const getStaticProps: GetStaticProps = async () => {
       id: product.id,
       name: product.name,
       imageUrl: product.images[0],
-      price: new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(Number(price.unit_amount) / 100),
+      price: price.unit_amount / 100,
     }
   })
 

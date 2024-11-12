@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Button } from '@/components/ui/button'
 import {
   Drawer,
@@ -9,31 +10,24 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { useMyContext } from '@/utils/context/useContext'
+import { FormatCurrency } from '@/utils/functions/formatCurrency'
 import { Handbag, X } from 'phosphor-react'
 import { toast } from 'react-toastify'
 import { ProductCard } from './ProductCard'
 
 export function ModalDrawer() {
-  const { productsBuy, setProductsBuy } = useMyContext()
+  const { productsBuy, setProductsBuy, total } = useMyContext()
   const notify = () => toast.success('Removido!', { autoClose: 2000 })
-  const total = productsBuy.reduce(
-    (total, product) => total + Number(product.price),
-    0,
-  )
 
-  function handleProductRemove(id: string) {
-    const productIndex = productsBuy.findIndex((product) => product.id === id)
+  function handleProductRemove(id_local: number) {
+    const filterProducts = productsBuy.filter(
+      (product) => product.id_local !== id_local,
+    )
 
-    if (productIndex !== -1) {
-      // Verifica se o produto foi encontrado
-      const filterProducts = [...productsBuy] // Cria uma cópia do array de produtos
-      filterProducts.splice(productIndex, 1) // Remove o produto do array
+    setProductsBuy(filterProducts)
 
-      setProductsBuy(filterProducts) // Atualiza o estado com o novo array de produtos
-
-      localStorage.setItem('cart', JSON.stringify(filterProducts))
-      notify() // Atualiza o armazenamento local
-    }
+    localStorage.setItem('cart', JSON.stringify(filterProducts))
+    notify()
   }
 
   return (
@@ -71,8 +65,8 @@ export function ModalDrawer() {
                   key={product.id}
                   image={product.imageUrl}
                   name={product.name}
-                  price={product.price.toString()}
-                  onRemove={() => handleProductRemove(product.id)}
+                  price={FormatCurrency(product.price)}
+                  onRemove={() => handleProductRemove(product.id_local)}
                 />
               ))}
             </div>
@@ -93,7 +87,7 @@ export function ModalDrawer() {
                   Valor total
                 </span>
                 <span className="text-2xl font-bold text-gray-200">
-                  R$ {total}
+                  {FormatCurrency(total)}
                 </span>
               </div>
             </div>

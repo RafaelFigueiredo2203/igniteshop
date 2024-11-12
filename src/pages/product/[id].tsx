@@ -4,6 +4,7 @@ import {
   ProductDetails,
 } from '@/styles/global'
 import { useMyContext } from '@/utils/context/useContext'
+import { FormatCurrency } from '@/utils/functions/formatCurrency'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -17,7 +18,7 @@ interface ProductProps {
     id: string
     name: string
     imageUrl: string
-    price: string
+    price: number
     description: string
     defaultPriceId: string
   }
@@ -48,9 +49,15 @@ export default function Product({ product }: ProductProps) {
     }
   }
 */
-
+  console.log(product)
   function addToBag() {
-    setProductsBuy((prevState) => [...prevState, product])
+    const newProduct = {
+      // eslint-disable-next-line new-cap
+      id_local: Math.random(),
+      ...product,
+    }
+
+    setProductsBuy((prevState) => [...prevState, newProduct])
 
     // Atualizar o local storage com o novo estado do carrinho
     localStorage.setItem('cart', JSON.stringify(productsBuy))
@@ -70,7 +77,7 @@ export default function Product({ product }: ProductProps) {
 
         <ProductDetails>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{FormatCurrency(product.price)}</span>
 
           <p>{product.description}</p>
 
@@ -107,10 +114,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format(Number(price.unit_amount) / 100),
+        price: price.unit_amount / 100,
         description: product.description,
         defaultPriceId: price.id,
       },
