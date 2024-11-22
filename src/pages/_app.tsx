@@ -3,6 +3,7 @@ import { Container, Header } from '@/styles/pages/app'
 import { CartProvider } from '@/utils/context/context'
 import { AppProps } from 'next/app'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import logoImg from '../assets/logo.svg'
@@ -16,7 +17,9 @@ function App({ Component, pageProps }: AppProps) {
     <Container>
       <CartProvider>
         <Header>
-          <Image src={logoImg} alt="" />
+          <Link href={'/'} prefetch={false}>
+            <Image src={logoImg} alt="" />
+          </Link>
           <ModalDrawer />
         </Header>
 

@@ -11,35 +11,102 @@ import {
 } from '@/components/ui/drawer'
 import { useMyContext } from '@/utils/context/useContext'
 import { FormatCurrency } from '@/utils/functions/formatCurrency'
+import axios from 'axios'
 import { Handbag, X } from 'phosphor-react'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { ProductCard } from './ProductCard'
 
 export function ModalDrawer() {
-  const { productsBuy, setProductsBuy, total } = useMyContext()
+  const { productsBuy, setProductsBuy, total, totalOfProductsOnCart } =
+    useMyContext()
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
+
   const notify = () => toast.success('Removido!', { autoClose: 2000 })
 
-  function handleProductRemove(id_local: number) {
-    const filterProducts = productsBuy.filter(
-      (product) => product.id_local !== id_local,
+  function handleIncreaseProduct(id: string) {
+    setProductsBuy((prevProducts) =>
+      prevProducts.map((products) =>
+        products.id === id
+          ? {
+              ...products,
+              quantity: products.quantity + 1,
+              newPrice: products.price * (products.quantity + 1), // Calcula com base na nova quantidade
+            }
+          : products,
+      ),
     )
+    localStorage.setItem('cart', JSON.stringify(productsBuy))
+  }
 
-    setProductsBuy(filterProducts)
+  function handleDecreaseProduct(id: string) {
+    setProductsBuy((prevProducts) =>
+      prevProducts.map((products) =>
+        products.id === id
+          ? {
+              ...products,
+              quantity: products.quantity > 1 ? products.quantity - 1 : 1, // Evita quantidade negativa
+              newPrice:
+                products.price *
+                (products.quantity > 1 ? products.quantity - 1 : 1), // Calcula com base na nova quantidade
+            }
+          : products,
+      ),
+    )
+    localStorage.setItem('cart', JSON.stringify(productsBuy))
+  }
 
-    localStorage.setItem('cart', JSON.stringify(filterProducts))
-    notify()
+  function handleProductRemove(id: string) {
+    const productIndex = productsBuy.findIndex((product) => product.id === id)
+
+    if (productIndex !== -1) {
+      // Verifica se o produto foi encontrado
+      const filterProducts = [...productsBuy] // Cria uma cópia do array de produtos
+      filterProducts.splice(productIndex, 1) // Remove o produto do array
+
+      setProductsBuy(filterProducts) // Atualiza o estado com o novo array de produtos
+
+      localStorage.setItem('cart', JSON.stringify(filterProducts))
+      notify() // Atualiza o armazenamento local
+    }
+  }
+
+  async function handleCheckout() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const response = await axios.post('/api/checkout', {
+        lineItems: productsBuy,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (err) {
+      setIsCreatingCheckoutSession(false)
+      console.log(err)
+      alert('Falha ao redirecionar ao checkout!')
+    }
   }
 
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button
-          className="disabled:cursor-not-allowed"
-          variant="outline"
-          disabled={productsBuy.length <= 0}
-        >
-          <Handbag size={24} color="white" weight="bold" />
-        </Button>
+        {productsBuy.length > 0 ? (
+          <Button
+            className="relative marker:disabled:cursor-not-allowed"
+            variant="outline"
+            disabled={productsBuy.length <= 0}
+          >
+            <Handbag size={24} color="white" weight="bold" />
+            <span className="white font-bold text-xs absolute right-0 bottom-0">
+              {productsBuy.length}
+            </span>
+          </Button>
+        ) : (
+          <></>
+        )}
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
@@ -65,8 +132,11 @@ export function ModalDrawer() {
                   key={product.id}
                   image={product.imageUrl}
                   name={product.name}
+                  quantity={product.quantity}
                   price={FormatCurrency(product.price)}
-                  onRemove={() => handleProductRemove(product.id_local)}
+                  onRemove={() => handleProductRemove(product.id)}
+                  onDecreaseQuantity={() => handleDecreaseProduct(product.id)}
+                  onIncreaseQuantity={() => handleIncreaseProduct(product.id)}
                 />
               ))}
             </div>
@@ -79,7 +149,7 @@ export function ModalDrawer() {
                   Quantidade
                 </span>
                 <span className="text-base font-normal text-gray-200">
-                  {productsBuy.length} itens
+                  {totalOfProductsOnCart} itens
                 </span>
               </div>
               <div className="w-full flex flex-row items-center justify-between">
@@ -91,7 +161,10 @@ export function ModalDrawer() {
                 </span>
               </div>
             </div>
-            <Button className="h-16 bg-[#00875F] flex items-center justify-center bottom-0 hover:opacity-40">
+            <Button
+              onClick={handleCheckout}
+              className="h-16 bg-[#00875F] flex items-center justify-center bottom-0 hover:opacity-40"
+            >
               <span className="text-lg font-bold text-white">
                 Finalizar Compra
               </span>

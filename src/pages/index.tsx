@@ -16,15 +16,15 @@ import Stripe from 'stripe'
 interface HomeProps {
   products: {
     id: string
-    stripe_id: string
     name: string
     imageUrl: string
     price: number
+    quantity: number
   }[]
 }
 
 export default function Home({ products }: HomeProps) {
-  const { productsBuy, setProductsBuy } = useMyContext()
+  const { setProductsBuy, productsBuy } = useMyContext()
 
   const [sliderRef] = useKeenSlider({
     slides: {
@@ -36,22 +36,37 @@ export default function Home({ products }: HomeProps) {
   const notify = () => toast.success('Adicionado!', { autoClose: 2000 })
 
   function addToBag(id: string) {
-    const newProductBuy = products.find((x: { id: string }) => x.id === id)
+    // Encontra o índice do produto no carrinho
+    const existingProductIndex = productsBuy.findIndex((p) => p.id === id)
 
-    if (!newProductBuy) {
-      return
+    let updatedProducts
+
+    if (existingProductIndex !== -1) {
+      // Produto já está no carrinho: atualiza a quantidade
+      updatedProducts = [...productsBuy]
+      updatedProducts[existingProductIndex] = {
+        ...updatedProducts[existingProductIndex],
+        quantity: updatedProducts[existingProductIndex].quantity + 1,
+      }
+    } else {
+      // Procura o produto na lista de produtos disponíveis
+      const productToAdd = products.find((p) => p.id === id)
+
+      if (productToAdd) {
+        // Adiciona o produto ao carrinho com `quantity: 1`
+        updatedProducts = [...productsBuy, { ...productToAdd, quantity: 1 }]
+      } else {
+        // Produto não encontrado, retorna sem fazer nada
+        console.error(`Produto com ID "${id}" não encontrado.`)
+        return
+      }
     }
 
-    const newProduct = {
-      // eslint-disable-next-line new-cap
-      id_local: Math.random(),
-      ...newProductBuy,
-    }
+    // Atualiza o estado do carrinho e armazena no localStorage
+    setProductsBuy(updatedProducts)
+    localStorage.setItem('cart', JSON.stringify(updatedProducts))
 
-    setProductsBuy((prevState) => [...prevState, newProduct])
-
-    // Atualizar o local storage com o novo estado do carrinho
-    localStorage.setItem('cart', JSON.stringify(productsBuy))
+    // Exibe notificação
     notify()
   }
 
@@ -59,6 +74,7 @@ export default function Home({ products }: HomeProps) {
     localStorage.setItem('cart', JSON.stringify(productsBuy))
   }, [productsBuy])
 
+  // Carrega o carrinho do localStorage ao montar o componente
   useEffect(() => {
     const productsJSON = localStorage.getItem('cart')
     const products = productsJSON ? JSON.parse(productsJSON) : []
@@ -74,7 +90,7 @@ export default function Home({ products }: HomeProps) {
         {products.map((product) => {
           return (
             <Product key={product.id} className="keen-slider__slide">
-              <Link href={`/product/${product.stripe_id}`} prefetch={false}>
+              <Link href={`/product/${product.id}`} prefetch={false}>
                 <Image src={product.imageUrl} width={520} height={480} alt="" />
               </Link>
               <footer>

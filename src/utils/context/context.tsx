@@ -7,9 +7,8 @@ import {
 } from 'react'
 
 export interface Product {
+  quantity: number
   id: string
-  id_local: number
-  stripe_id: string
   imageUrl: string
   name: string
   price: number
@@ -19,6 +18,7 @@ interface CartContextType {
   productsBuy: Product[]
   setProductsBuy: Dispatch<SetStateAction<Product[]>>
   total: number
+  totalOfProductsOnCart: number
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -30,9 +30,15 @@ interface CartProviderProps {
 export function CartProvider({ children }: CartProviderProps) {
   const [productsBuy, setProductsBuy] = useState<Product[]>([])
   const total = productsBuy.reduce(
-    (accumulator, product) => accumulator + (Number(product.price) || 0),
+    (total, product) => total + product.price * product.quantity,
     0,
   )
+
+  const totalOfProductsOnCart = productsBuy.reduce(
+    (total, product) => total + product.quantity,
+    0,
+  )
+
   console.log(total)
 
   return (
@@ -41,6 +47,7 @@ export function CartProvider({ children }: CartProviderProps) {
         productsBuy,
         setProductsBuy,
         total,
+        totalOfProductsOnCart,
       }}
     >
       {children}
