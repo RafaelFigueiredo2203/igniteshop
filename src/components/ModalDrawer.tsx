@@ -15,7 +15,7 @@ import { Handbag, X } from 'phosphor-react'
 import { toast } from 'react-toastify'
 import { ProductCard } from './ProductCard'
 
-export default function ModalDrawer() {
+export function ModalDrawer() {
   const { productsBuy, setProductsBuy, total, totalOfProductsOnCart } =
     useMyContext()
 
