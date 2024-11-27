@@ -29,7 +29,7 @@ export default function Success({ customerName, products }: SuccessProps) {
 
       <div className="flex flex-row items-center justify-center relative ml-11">
         {products?.map((item) => (
-          <ImageContainer key={item.id}>
+          <ImageContainer key={item.id} className="rounded-full">
             <Image src={item.imageUrl} width={120} height={110} alt="" />
           </ImageContainer>
         ))}
