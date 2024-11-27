@@ -124,7 +124,7 @@ export function ModalDrawer() {
               <span>Adicione produtos ao carrinho</span>
             </>
           ) : (
-            <div className=" min-h-80 max-h-80  overflow-y-scroll">
+            <div className=" min-h-80 max-h-80 overflow-y-auto">
               {productsBuy.map((product) => (
                 <ProductCard
                   key={product.id}
