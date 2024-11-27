@@ -36,7 +36,6 @@ export default function ProductPage({ product }: ProductProps) {
 
   console.log(product)
   function addToBag(product: Product) {
-    // Encontra o índice do produto no carrinho
     const existingProductIndex = productsBuy.findIndex(
       (p) => p.id === product.id,
     )
@@ -44,22 +43,18 @@ export default function ProductPage({ product }: ProductProps) {
     let updatedProducts
 
     if (existingProductIndex !== -1) {
-      // Produto já está no carrinho: atualiza a quantidade
       updatedProducts = [...productsBuy]
       updatedProducts[existingProductIndex] = {
         ...updatedProducts[existingProductIndex],
         quantity: updatedProducts[existingProductIndex].quantity + 1,
       }
     } else {
-      // Adiciona o produto ao carrinho com `quantity: 1`
       updatedProducts = [...productsBuy, { ...product, quantity: 1 }]
     }
 
-    // Atualiza o estado do carrinho e armazena no localStorage
     setProductsBuy(updatedProducts)
     localStorage.setItem('cart', JSON.stringify(updatedProducts))
 
-    // Exibe notificação
     notify()
   }
 
@@ -105,7 +100,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   const productId = params?.id
 
   if (!productId) {
-    return { notFound: true } // Página 404
+    return { notFound: true }
   }
 
   try {
@@ -126,10 +121,10 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
           defaultPriceId: price.id,
         },
       },
-      revalidate: 60 * 60 * 1, // 1 hora
+      revalidate: 60 * 60 * 1,
     }
   } catch (error) {
     console.error('Erro ao buscar produto:', error)
-    return { notFound: true } // Retorna 404 se falhar
+    return { notFound: true }
   }
 }

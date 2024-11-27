@@ -28,7 +28,7 @@ export function ModalDrawer() {
           ? {
               ...products,
               quantity: products.quantity + 1,
-              newPrice: products.price * (products.quantity + 1), // Calcula com base na nova quantidade
+              newPrice: products.price * (products.quantity + 1),
             }
           : products,
       ),
@@ -42,10 +42,10 @@ export function ModalDrawer() {
         products.id === id
           ? {
               ...products,
-              quantity: products.quantity > 1 ? products.quantity - 1 : 1, // Evita quantidade negativa
+              quantity: products.quantity > 1 ? products.quantity - 1 : 1,
               newPrice:
                 products.price *
-                (products.quantity > 1 ? products.quantity - 1 : 1), // Calcula com base na nova quantidade
+                (products.quantity > 1 ? products.quantity - 1 : 1),
             }
           : products,
       ),
@@ -57,14 +57,12 @@ export function ModalDrawer() {
     const productIndex = productsBuy.findIndex((product) => product.id === id)
 
     if (productIndex !== -1) {
-      // Verifica se o produto foi encontrado
-      const filterProducts = [...productsBuy] // Cria uma cópia do array de produtos
-      filterProducts.splice(productIndex, 1) // Remove o produto do array
+      const filterProducts = [...productsBuy]
+      filterProducts.splice(productIndex, 1)
 
-      setProductsBuy(filterProducts) // Atualiza o estado com o novo array de produtos
-
+      setProductsBuy(filterProducts)
       localStorage.setItem('cart', JSON.stringify(filterProducts))
-      notify() // Atualiza o armazenamento local
+      notify()
     }
   }
 
@@ -81,7 +79,7 @@ export function ModalDrawer() {
       const data = await response.json()
 
       if (data.url) {
-        window.location.href = data.url // Redireciona para o checkout da Stripe
+        window.location.href = data.url
       } else {
         console.error('Erro ao criar sessão de checkout:', data.error)
       }

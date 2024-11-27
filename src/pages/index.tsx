@@ -36,37 +36,30 @@ export default function Home({ products }: HomeProps) {
   const notify = () => toast.success('Adicionado!', { autoClose: 2000 })
 
   function addToBag(id: string) {
-    // Encontra o índice do produto no carrinho
     const existingProductIndex = productsBuy.findIndex((p) => p.id === id)
 
     let updatedProducts
 
     if (existingProductIndex !== -1) {
-      // Produto já está no carrinho: atualiza a quantidade
       updatedProducts = [...productsBuy]
       updatedProducts[existingProductIndex] = {
         ...updatedProducts[existingProductIndex],
         quantity: updatedProducts[existingProductIndex].quantity + 1,
       }
     } else {
-      // Procura o produto na lista de produtos disponíveis
       const productToAdd = products.find((p) => p.id === id)
 
       if (productToAdd) {
-        // Adiciona o produto ao carrinho com `quantity: 1`
         updatedProducts = [...productsBuy, { ...productToAdd, quantity: 1 }]
       } else {
-        // Produto não encontrado, retorna sem fazer nada
         console.error(`Produto com ID "${id}" não encontrado.`)
         return
       }
     }
 
-    // Atualiza o estado do carrinho e armazena no localStorage
     setProductsBuy(updatedProducts)
     localStorage.setItem('cart', JSON.stringify(updatedProducts))
 
-    // Exibe notificação
     notify()
   }
 
@@ -74,7 +67,6 @@ export default function Home({ products }: HomeProps) {
     localStorage.setItem('cart', JSON.stringify(productsBuy))
   }, [productsBuy])
 
-  // Carrega o carrinho do localStorage ao montar o componente
   useEffect(() => {
     const productsJSON = localStorage.getItem('cart')
     const products = productsJSON ? JSON.parse(productsJSON) : []

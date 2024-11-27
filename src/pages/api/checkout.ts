@@ -11,26 +11,24 @@ export default async function handler(
     try {
       const { productsBuy } = req.body
 
-      // Transformar os produtos para o formato esperado pela Stripe
       const lineItems = productsBuy.map((product: Product) => ({
         price_data: {
-          currency: 'usd', // Substitua pela moeda desejada
+          currency: 'usd',
           product_data: {
             name: product.name,
-            images: [product.imageUrl], // URL da imagem do produto
+            images: [product.imageUrl],
           },
-          unit_amount: Math.round(product.price * 100), // Preço em centavos
+          unit_amount: Math.round(product.price * 100),
         },
-        quantity: product.quantity, // Quantidade do produto
+        quantity: product.quantity,
       }))
 
-      // Criar a sessão de checkout
       const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'], // Métodos de pagamento aceitos
+        payment_method_types: ['card'],
         line_items: lineItems,
-        mode: 'payment', // Modo de pagamento único
-        success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`, // URL de sucesso
-        cancel_url: `${req.headers.origin}/cancel`, // URL de cancelamento
+        mode: 'payment',
+        success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/cancel`,
       })
 
       res.status(200).json({ url: session.url })
