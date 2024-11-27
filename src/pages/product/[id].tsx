@@ -103,7 +103,11 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   params,
 }) => {
   const productId = params?.id
-
+  
+   if (!productId) {
+      return { notFound: true }; // Gera página 404
+    }
+  
   const product = await stripe.products.retrieve(productId as string, {
     expand: ['default_price'],
   })
