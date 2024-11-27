@@ -105,26 +105,31 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   const productId = params?.id
 
   if (!productId) {
-    return { notFound: true } // Gera página 404
+    return { notFound: true } // Página 404
   }
 
-  const product = await stripe.products.retrieve(productId as string, {
-    expand: ['default_price'],
-  })
+  try {
+    const product = await stripe.products.retrieve(productId, {
+      expand: ['default_price'],
+    })
 
-  const price = product.default_price as Stripe.Price
+    const price = product.default_price as Stripe.Price
 
-  return {
-    props: {
-      product: {
-        id: product.id,
-        name: product.name,
-        imageUrl: product.images[0],
-        price: Number(price.unit_amount) / 100,
-        description: product.description,
-        defaultPriceId: price.id,
+    return {
+      props: {
+        product: {
+          id: product.id,
+          name: product.name,
+          imageUrl: product.images[0],
+          price: Number(price.unit_amount) / 100,
+          description: product.description,
+          defaultPriceId: price.id,
+        },
       },
-    },
-    revalidate: 60 * 60 * 1, // 1 hours
+      revalidate: 60 * 60 * 1, // 1 hora
+    }
+  } catch (error) {
+    console.error('Erro ao buscar produto:', error)
+    return { notFound: true } // Retorna 404 se falhar
   }
 }
