@@ -1,22 +1,21 @@
-import { globalCss, styled } from ".";
-
+import { globalCss, styled } from '.'
 
 export const globalStyles = globalCss({
-  '*':{
-    margin:0,
-    padding:0
+  '*': {
+    margin: 0,
+    padding: 0,
   },
 
-  body:{
-    backgroundColor:'$gray900',
+  body: {
+    backgroundColor: '$gray900',
     color: '$gray100',
-    '-webkit-font-smoothing':'antialiased',
+    '-webkit-font-smoothing': 'antialiased',
   },
 
-  'body, input, textarea, button':{
-    fontFamily:'Roboto',
-    fontWeight:400
-  }
+  'body, input, textarea, button': {
+    fontFamily: 'Roboto',
+    fontWeight: 400,
+  },
 })
 
 export const ProductContainer = styled('main', {
@@ -26,14 +25,14 @@ export const ProductContainer = styled('main', {
   gap: '4rem',
 
   maxWidth: 1180,
-  margin: '0 auto'
+  margin: '0 auto',
 })
 
 export const ImageContainer = styled('div', {
   width: '100%',
   maxWidth: 576,
   height: 575,
-  marginBottom:20,
+  marginBottom: 20,
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
   borderRadius: 8,
   padding: '0.25rem',
@@ -44,8 +43,7 @@ export const ImageContainer = styled('div', {
 
   img: {
     objectFit: 'cover',
-   
-  }
+  },
 })
 
 export const ProductDetails = styled('div', {
@@ -83,12 +81,13 @@ export const ProductDetails = styled('div', {
     fontWeight: 'bold',
     fontSize: '$md',
 
-    '&:disabled':{
-      opacity:0.6,
-      cursor : 'not-allowed',
+    '&:disabled': {
+      opacity: 0.6,
+      cursor: 'not-allowed',
     },
 
     '&:hover': {
       backgroundColor: '$green300',
-    }
-  },})
+    },
+  },
+})

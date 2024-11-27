@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client'
 
 import { cva } from 'class-variance-authority'

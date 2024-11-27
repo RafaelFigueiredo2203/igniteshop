@@ -1,4 +1,4 @@
-import { ModalDrawer } from '@/components/modal'
+import { ModalDrawer } from '@/components/Modal'
 import { Container, Header } from '@/styles/pages/app'
 import { CartProvider } from '@/utils/context/context'
 import { AppProps } from 'next/app'

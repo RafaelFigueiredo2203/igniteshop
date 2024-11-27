@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ImageContainer,
   ProductContainer,
@@ -100,9 +101,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   params,
 }) => {
-  const productId = params.id
+  const productId = params?.id
 
-  const product = await stripe.products.retrieve(productId, {
+  const product = await stripe.products.retrieve(productId as string, {
     expand: ['default_price'],
   })
 
@@ -114,7 +115,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: price.unit_amount / 100,
+        price: Number(price.unit_amount) / 100,
         description: product.description,
         defaultPriceId: price.id,
       },
