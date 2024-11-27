@@ -11,17 +11,13 @@ import {
 } from '@/components/ui/drawer'
 import { useMyContext } from '@/utils/context/useContext'
 import { FormatCurrency } from '@/utils/functions/formatCurrency'
-import axios from 'axios'
 import { Handbag, X } from 'phosphor-react'
-import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { ProductCard } from './ProductCard'
 
 export function ModalDrawer() {
   const { productsBuy, setProductsBuy, total, totalOfProductsOnCart } =
     useMyContext()
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false)
 
   const notify = () => toast.success('Removido!', { autoClose: 2000 })
 
@@ -74,19 +70,23 @@ export function ModalDrawer() {
 
   async function handleCheckout() {
     try {
-      setIsCreatingCheckoutSession(true)
-
-      const response = await axios.post('/api/checkout', {
-        lineItems: productsBuy,
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productsBuy }),
       })
 
-      const { checkoutUrl } = response.data
+      const data = await response.json()
 
-      window.location.href = checkoutUrl
-    } catch (err) {
-      setIsCreatingCheckoutSession(false)
-      console.log(err)
-      alert('Falha ao redirecionar ao checkout!')
+      if (data.url) {
+        window.location.href = data.url // Redireciona para o checkout da Stripe
+      } else {
+        console.error('Erro ao criar sessão de checkout:', data.error)
+      }
+    } catch (error) {
+      console.error('Erro ao processar checkout:', error)
     }
   }
 

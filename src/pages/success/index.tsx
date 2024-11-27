@@ -8,13 +8,17 @@ import Stripe from 'stripe'
 
 interface SuccessProps {
   customerName: string
-  product: {
-    name: string
-    imageUrl: string
-  }
+  products: [
+    {
+      id: string
+      imageUrl: string
+      name: string
+    },
+  ]
 }
 
-export default function Success({ customerName, product }: SuccessProps) {
+export default function Success({ customerName, products }: SuccessProps) {
+  console.log(products)
   return (
     <SuccessContainer>
       <Head>
@@ -22,15 +26,22 @@ export default function Success({ customerName, product }: SuccessProps) {
 
         <meta name="robots" content="noindex" />
       </Head>
-      <h1>Compra Efetuada!</h1>
 
-      <ImageContainer>
-        <Image src={product.imageUrl} width={120} height={110} alt="" />
-      </ImageContainer>
+      <div className="flex flex-row items-center justify-center relative ml-11">
+        {products?.map((item) => (
+          <ImageContainer key={item.id}>
+            <Image src={item.imageUrl} width={120} height={110} alt="" />
+          </ImageContainer>
+        ))}
+      </div>
+      <h1>Compra Efetuada!</h1>
 
       <p>
         Uhuul <strong>{customerName}</strong>, sua{' '}
-        <strong>{product.name}</strong> já está a caminho da sua casa.
+        {products.map((item) => (
+          <strong key={item.id}>{item.name}, </strong>
+        ))}{' '}
+        já está a caminho da sua casa.
       </p>
 
       <Link href="/">Voltar ao Catálogo</Link>
@@ -49,20 +60,29 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   }
 
   const sessionId = String(query.session_id)
+
+  // Recuperando a sessão do Stripe e expandindo os itens
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['line_items', 'line_items.data.price.product'],
   })
 
   const customerName = session?.customer_details?.name
-  const product = session.line_items?.data[0].price?.product as Stripe.Product
+
+  // Obtendo todos os produtos da sessão de checkout
+  const products = session.line_items?.data.map((item) => {
+    const product = item.price?.product as Stripe.Product
+
+    return {
+      id: product.id,
+      name: product.name,
+      imageUrl: product.images[0],
+    }
+  })
 
   return {
     props: {
       customerName,
-      product: {
-        name: product.name,
-        imageUrl: product.images[0],
-      },
+      products,
     },
   }
 }
