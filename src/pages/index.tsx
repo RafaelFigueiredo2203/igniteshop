@@ -9,7 +9,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Handbag } from 'phosphor-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Stripe from 'stripe'
 
@@ -25,6 +25,18 @@ interface HomeProps {
 
 export default function Home({ products }: HomeProps) {
   const { setProductsBuy, productsBuy } = useMyContext()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Garante que o código será executado apenas no navegador
+    if (typeof window !== 'undefined') {
+      const handleResize = () => setIsMobile(window.innerWidth < 768)
+      handleResize() // Atualiza o estado imediatamente
+      window.addEventListener('resize', handleResize)
+
+      return () => window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   const [sliderRef] = useKeenSlider({
     slides: {
@@ -73,35 +85,83 @@ export default function Home({ products }: HomeProps) {
     setProductsBuy(products)
   }, [setProductsBuy])
 
+  useEffect(() => {
+    // Garante que o código será executado apenas no navegador
+    if (typeof window !== 'undefined') {
+      const handleResize = () => setIsMobile(window.innerWidth < 768)
+      handleResize() // Atualiza o estado imediatamente
+      window.addEventListener('resize', handleResize)
+
+      return () => window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   return (
     <>
       <Head>
         <title>Ignite Shop</title>
       </Head>
-      <HomeContainer ref={sliderRef} className="keen-slider">
-        {products.map((product) => {
-          return (
-            <Product key={product.id} className="keen-slider__slide">
-              <Link href={`/product/${product.id}`} prefetch={false}>
-                <Image src={product.imageUrl} width={520} height={480} alt="" />
-              </Link>
-              <footer>
-                <div>
-                  <strong>{product.name}</strong>
-                  <span>{FormatCurrency(product.price)}</span>
-                </div>
+      {isMobile ? (
+        <div className="flex flex-col items-center justify-start px-4 pb-16">
+          {products.map((product) => {
+            return (
+              <Product key={product.id} className="keen-slider__slide md:">
+                <Link href={`/product/${product.id}`} prefetch={false}>
+                  <Image
+                    src={product.imageUrl}
+                    width={520}
+                    height={480}
+                    alt=""
+                  />
+                </Link>
+                <footer>
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>{FormatCurrency(product.price)}</span>
+                  </div>
 
-                <button
-                  onClick={() => addToBag(product.id)}
-                  className="bg-black"
-                >
-                  <Handbag size={24} color="white" weight="bold" />
-                </button>
-              </footer>
-            </Product>
-          )
-        })}
-      </HomeContainer>
+                  <button
+                    onClick={() => addToBag(product.id)}
+                    className="bg-black"
+                  >
+                    <Handbag size={24} color="white" weight="bold" />
+                  </button>
+                </footer>
+              </Product>
+            )
+          })}
+        </div>
+      ) : (
+        <HomeContainer ref={sliderRef} className="keen-slider">
+          {products.map((product) => {
+            return (
+              <Product key={product.id} className="keen-slider__slide md:">
+                <Link href={`/product/${product.id}`} prefetch={false}>
+                  <Image
+                    src={product.imageUrl}
+                    width={520}
+                    height={480}
+                    alt=""
+                  />
+                </Link>
+                <footer>
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>{FormatCurrency(product.price)}</span>
+                  </div>
+
+                  <button
+                    onClick={() => addToBag(product.id)}
+                    className="bg-black"
+                  >
+                    <Handbag size={24} color="white" weight="bold" />
+                  </button>
+                </footer>
+              </Product>
+            )
+          })}
+        </HomeContainer>
+      )}
     </>
   )
 }

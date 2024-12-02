@@ -124,7 +124,7 @@ export function ModalDrawer() {
               <span>Adicione produtos ao carrinho</span>
             </>
           ) : (
-            <div className=" min-h-80 max-h-80 overflow-y-auto">
+            <div className=" min-h-64 max-h-24  overflow-y-auto  max-680:max-h-14">
               {productsBuy.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -143,18 +143,18 @@ export function ModalDrawer() {
           <DrawerFooter>
             <div className="flex flex-col items-center justify-between">
               <div className="w-full flex flex-row items-center justify-between">
-                <span className="text-base font-normal text-gray-200">
+                <span className="text-base font-normal text-gray-200 max-680:text-sm">
                   Quantidade
                 </span>
-                <span className="text-base font-normal text-gray-200">
+                <span className="text-base font-normal text-gray-200 max-680:text-sm">
                   {totalOfProductsOnCart} itens
                 </span>
               </div>
               <div className="w-full flex flex-row items-center justify-between">
-                <span className="text-lg font-bold text-gray-200">
+                <span className="text-lg font-bold text-gray-200 max-680:text-base">
                   Valor total
                 </span>
-                <span className="text-2xl font-bold text-gray-200">
+                <span className="text-2xl font-bold text-gray-200 max-680:text-xl">
                   {FormatCurrency(total)}
                 </span>
               </div>
@@ -163,7 +163,7 @@ export function ModalDrawer() {
               onClick={handleCheckout}
               className="h-16 bg-[#00875F] flex items-center justify-center bottom-0 hover:opacity-40"
             >
-              <span className="text-lg font-bold text-white">
+              <span className="text-lg font-bold text-white max-680:text-base">
                 Finalizar Compra
               </span>
             </Button>

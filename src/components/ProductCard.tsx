@@ -33,8 +33,12 @@ export function ProductCard({
       />
 
       <div className="w-full flex  flex-col mt-0 ml-4 items-start  justify-between">
-        <p className="pl-1  text-lg font-normal text-[#C4C4CC]">{name}</p>
-        <span className="pl-1 text-lg font-bold">{price}</span>
+        <p className="pl-1  text-lg font-normal text-[#C4C4CC] max-680:text-base">
+          {name}
+        </p>
+        <span className="pl-1 text-lg font-bold max-680:text-base">
+          {price}
+        </span>
         <div className="flex flex-row">
           <div className=" mr-2 flex h-8 flex-row items-center rounded-sm  sm:w-16">
             <Button

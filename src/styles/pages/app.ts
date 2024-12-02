@@ -3,8 +3,8 @@ import { styled } from '..'
 export const Container = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'center',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
   minHeight: '100vh',
 })
 export const Header = styled('header', {

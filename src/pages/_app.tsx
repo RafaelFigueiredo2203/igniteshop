@@ -16,7 +16,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <Container>
       <CartProvider>
-        <Header>
+        <Header className="px-4">
           <Link href={'/'} prefetch={false}>
             <Image src={logoImg} alt="" />
           </Link>

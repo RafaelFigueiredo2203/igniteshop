@@ -21,6 +21,10 @@ export const globalStyles = globalCss({
 export const ProductContainer = styled('main', {
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
+  paddingLeft: '16px',
+  paddingRight: '16px',
+  marginBottom: '16px',
+
   alignItems: 'stretch',
   gap: '4rem',
 
@@ -31,7 +35,7 @@ export const ProductContainer = styled('main', {
 export const ImageContainer = styled('div', {
   width: '100%',
   maxWidth: 576,
-  height: 575,
+
   marginBottom: 20,
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
   borderRadius: 8,
@@ -64,6 +68,7 @@ export const ProductDetails = styled('div', {
 
   p: {
     marginTop: '2.5rem',
+    marginBottom: '2.5rem',
     fontSize: '$md',
     lineHeight: 1.6,
     color: '$gray300',

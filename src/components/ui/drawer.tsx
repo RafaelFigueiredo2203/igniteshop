@@ -53,7 +53,7 @@ const drawerContentVariants = cva(
   {
     variants: {
       direction: {
-        right: 'ml-24 right-0 rounded-l-[10px] inset-y-0 w-[480px]',
+        right: 'ml-24 right-0 rounded-l-[10px] inset-y-0 w-[480px] max-680:w-[380px] px-6 ',
         top: 'mb-24 top-0 rounded-b-[10px] inset-x-0',
         bottom: 'mt-24 rounded-t-[10px] bottom-0 inset-x-0',
         left: 'mr-24 left-0 rounded-r-[10px] inset-y-0 ',
@@ -104,7 +104,7 @@ const DrawerFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'w-full flex flex-col gap-2  py-4 fixed bottom-0 left-0 px-14 ',
+      'w-full flex flex-col   py-4 relative  left-0 px-6 ',
       className,
     )}
     {...props}

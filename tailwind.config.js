@@ -16,6 +16,9 @@ module.exports = {
       backgroundImage: {
         'custom-gradient': 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
       },
+      screens: {
+        'max-680': { max: '680px' },
+      },
     },
   },
   plugins: [],

@@ -64,7 +64,7 @@ export default function ProductPage({ product }: ProductProps) {
         <title>{product.name} | Ignite Shop</title>
       </Head>
 
-      <ProductContainer>
+      <ProductContainer className="max-680:flex flex-col">
         <ImageContainer>
           <Image src={product.imageUrl} width={520} height={480} alt="" />
         </ImageContainer>
